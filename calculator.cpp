@@ -49,6 +49,12 @@ int main()
     // s.push(14566.3);
     // std::cout<<s.peep();
     //  std::cout<<symbolType('a')<<std::endl;
+    // std::string i = "1+3";
+    std::string i = "1+2^3-(4+5*6)*7+1";
+    //std::string i = "1-2^3^3-(4+5*6)*7";
+    std::string p;
+    std::cout << toPostfix(i, p) << std::endl;
+    std::cout << p;
 }
 
 int symbolType(char symbol)
@@ -72,8 +78,6 @@ int precValue(char symbol)
         return PMULT;
     else if (symbol == EXP)
         return PEXP;
-    else if (symbol == OPAR)
-        return POPAR;
     else if (symbol == SIN || symbol == COS || symbol == TAN || symbol == SQRT || symbol == ABS)
         return PSIGN;
     return -1;
@@ -103,6 +107,7 @@ int toPostfix(std::string infix, std::string &postfix)
 
     while (inp.get(ch))
     {
+        std::cout<<ch<<" ";
         // skip white spaces
         if (ch == ' ')
             continue;
@@ -113,9 +118,7 @@ int toPostfix(std::string infix, std::string &postfix)
             return -1;
         else
         {
-            if (op.isEmpty())
-                op.push(ch);
-            else if (ch == OPAR)
+            if (ch == OPAR)
                 op.push(ch);
             else if (ch == CPAR)
             {
@@ -125,16 +128,19 @@ int toPostfix(std::string infix, std::string &postfix)
             }
             else
             {
-                cmp = cmpPrec(op.peep(), ch);
-                if (cmp == 1)
-                    op.push(ch);
-                else if (cmp == 0)
+                while (!op.isEmpty() && cmpPrec(op.peep(), ch) >= 0)
                 {
-                    // pop until
+                    if (associativity(ch) == 1 && associativity(op.peep()) == 1)
+                        break;
+                    else
+                        postfix += op.pop();
                 }
+                op.push(ch);
             }
         }
     }
+    while (!op.isEmpty())
+        postfix += op.pop();
     if (inp.bad())
         return -1;
     return 0;

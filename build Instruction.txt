@@ -1,0 +1,16 @@
+ ----------------------------
+|Group Members (DRB 2002)	|
+|---------------------------|
+|                           |
+|Bereket Alemayehu - GH7511	|
+|                           |
+|Etsub Fikreab - OG8653		|
+|                           |
+-----------------------------
+---------------------------------------------
+command line instruction
+
+---------------------------------------------
+
+g++ -o .\calculator.exe .\calculator.cpp
+.\calculator.exe

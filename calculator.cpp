@@ -1,9 +1,21 @@
+/*
+ ----------------------------
+|Group Members (DRB 2002)	|
+|---------------------------|
+|                           |
+|Bereket Alemayehu - GH7511	|
+|                           |
+|Etsub Fikreab - OG8653		|
+|                           |
+-----------------------------
+ */
 #include "stack.cpp"
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <sstream>
-#include <math.h>
+#include <cmath>
+const float PI = 3.14159265;
 enum symbolType
 {
     OPERATOR,
@@ -44,12 +56,23 @@ int evaluate(std::string postfix);
 int main()
 {
 
-    std::string i = "1-2^3^3-(4+5*6)*7";
-    //std::string i = "1+7";
+    std::cout << "Enter a mathematical expression:\n";
+    std::string i;
+    std::getline(std::cin, i);
     std::string p;
-    std::cout << toPostfix(i, p) << std::endl;
-    std::cout << p;
-    std::cout << evaluate(p) << std::endl;
+    if (toPostfix(i, p) == -1)
+    {
+        std::cout << "There is a syntactical error in the expression,\n"
+                     "please rerun the program after correcting the expression\n"
+                     "Press enter to continue... ";
+        std::cin.get();
+    }
+    else if (evaluate(p) == -1)
+    {
+        std::cout << "Sorry, the expression could not be evaluated\n"
+                     "Press enter to continue... ";
+        std::cin.get();
+    }
 }
 
 int symbolType(char symbol)
@@ -152,6 +175,7 @@ int evaluate(std::string postfix)
     std::string s;
     char op;
     Stack<double> result;
+    double num;
     while (var >> s)
     {
         if (isdigit(s[0]))
@@ -161,45 +185,47 @@ int evaluate(std::string postfix)
         else
         {
             op = s[0];
+            num = result.pop();
             switch (op)
             {
             case ADD:
-                result.push(result.pop() + result.pop());
+                result.push(num + result.pop());
                 break;
             case SUB:
-                result.push(result.pop() - result.pop());
+                result.push(result.pop() - num);
                 break;
             case MULT:
-                result.push(result.pop() * result.pop());
+                result.push(num * result.pop());
                 break;
             case DIV:
-                result.push(result.pop() / result.pop());
+                result.push(result.pop() / num);
                 break;
             case EXP:
-                result.push(pow(result.pop(), result.pop()));
+                result.push(pow(result.pop(), num));
                 break;
             case ABS:
-                result.push(abs(result.pop()));
+                result.push(abs(num));
                 break;
             case SQRT:
-                result.push(sqrtf(result.pop()));
+                result.push(sqrtf(num));
                 break;
             case SIN:
-                result.push(sin(result.pop()));
+                result.push(sin(num * PI / 180));
                 break;
             case COS:
-                result.push(cos(result.pop()));
+                result.push(cos(num * PI / 180));
                 break;
             case TAN:
-                result.push(tan(result.pop()));
+                result.push(tan(num * PI / 180));
                 break;
 
             default:
+                return -1;
                 break;
             }
         }
     }
 
-    std::cout<<"Result = "<<result.pop();
+    std::cout << "Result = " << result.pop() << std::endl;
     return 0;
 }

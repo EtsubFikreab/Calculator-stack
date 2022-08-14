@@ -43,18 +43,13 @@ int evaluate(std::string postfix);
 
 int main()
 {
-    // Stack<double> s;
-    // s.push(12);
-    // s.push(41.22);
-    // s.push(14566.3);
-    // std::cout<<s.peep();
-    //  std::cout<<symbolType('a')<<std::endl;
-    // std::string i = "1+3";
-    std::string i = "1+2^3-(4+5*6)*7+1";
-    //std::string i = "1-2^3^3-(4+5*6)*7";
+
+    std::string i = "1-2^3^3-(4+5*6)*7";
+    //std::string i = "1+7";
     std::string p;
     std::cout << toPostfix(i, p) << std::endl;
     std::cout << p;
+    std::cout << evaluate(p) << std::endl;
 }
 
 int symbolType(char symbol)
@@ -64,7 +59,7 @@ int symbolType(char symbol)
         symbol == DIV || symbol == EXP || symbol == OPAR || symbol == SIN ||
         symbol == COS || symbol == TAN || symbol == SQRT || symbol == ABS)
         return OPERATOR;
-    else if (isdigit(symbol))
+    else if (isdigit(symbol) || symbol == '.')
         return OPERAND;
     return UNKNOWN;
 }
@@ -99,15 +94,12 @@ int associativity(char opr)
 int toPostfix(std::string infix, std::string &postfix)
 {
     postfix = "";
-    std::stringstream inp;
-    inp.str(infix);
     char ch;
     Stack<char> op;
     int type, cmp;
-
-    while (inp.get(ch))
+    for (int i = 0; i < infix.length(); i++)
     {
-        std::cout<<ch<<" ";
+        ch = infix[i];
         // skip white spaces
         if (ch == ' ')
             continue;
@@ -123,7 +115,10 @@ int toPostfix(std::string infix, std::string &postfix)
             else if (ch == CPAR)
             {
                 while (op.peep() != OPAR)
+                {
+                    postfix += " ";
                     postfix += op.pop();
+                }
                 op.pop();
             }
             else
@@ -133,16 +128,78 @@ int toPostfix(std::string infix, std::string &postfix)
                     if (associativity(ch) == 1 && associativity(op.peep()) == 1)
                         break;
                     else
+                    {
+                        postfix += " ";
                         postfix += op.pop();
+                    }
                 }
+                postfix += " ";
                 op.push(ch);
             }
         }
     }
     while (!op.isEmpty())
+    {
+        postfix += " ";
         postfix += op.pop();
-    if (inp.bad())
-        return -1;
+        postfix += " ";
+    }
     return 0;
 }
-// int evaluate(string  postfix);
+int evaluate(std::string postfix)
+{
+    std::stringstream var(postfix);
+    std::string s;
+    char op;
+    Stack<double> result;
+    while (var >> s)
+    {
+        if (isdigit(s[0]))
+        {
+            result.push(stod(s));
+        }
+        else
+        {
+            op = s[0];
+            switch (op)
+            {
+            case ADD:
+                result.push(result.pop() + result.pop());
+                break;
+            case SUB:
+                result.push(result.pop() - result.pop());
+                break;
+            case MULT:
+                result.push(result.pop() * result.pop());
+                break;
+            case DIV:
+                result.push(result.pop() / result.pop());
+                break;
+            case EXP:
+                result.push(pow(result.pop(), result.pop()));
+                break;
+            case ABS:
+                result.push(abs(result.pop()));
+                break;
+            case SQRT:
+                result.push(sqrtf(result.pop()));
+                break;
+            case SIN:
+                result.push(sin(result.pop()));
+                break;
+            case COS:
+                result.push(cos(result.pop()));
+                break;
+            case TAN:
+                result.push(tan(result.pop()));
+                break;
+
+            default:
+                break;
+            }
+        }
+    }
+
+    std::cout<<"Result = "<<result.pop();
+    return 0;
+}

@@ -3,6 +3,7 @@ template <class T>
 Stack<T>::Stack()
 {
     top = NULL;
+    count=0;
 }
 template <class T>
 void Stack<T>::empty()

@@ -13,6 +13,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <limits>
 #include <sstream>
 #include <cmath>
 const float PI = 3.14159265;
@@ -52,29 +53,87 @@ int cmpPrec(char oprStk, char oprInp);
 int associativity(char opr);
 int toPostfix(std::string infix, std::string &postfix);
 int evaluate(std::string postfix);
-
+int mainMenuChoice();
+void help();
 int main()
 {
-
-    std::cout << "Enter a mathematical expression:\n";
-    std::string i;
-    std::getline(std::cin, i);
-    std::string p;
-    if (toPostfix(i, p) == -1)
+    int choice;
+    do
     {
-        std::cout << "There is a syntactical error in the expression,\n"
-                     "please rerun the program after correcting the expression\n"
-                     "Press enter to continue... ";
-        std::cin.get();
-    }
-    else if (evaluate(p) == -1)
-    {
-        std::cout << "Sorry, the expression could not be evaluated\n"
-                     "Press enter to continue... ";
-        std::cin.get();
-    }
+        choice = mainMenuChoice();
+        if (choice == 1)
+        {
+            std::cout << "Enter a mathematical expression:\n";
+            std::string i;
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::getline(std::cin, i);
+            std::string p;
+            if (toPostfix(i, p) == -1)
+            {
+                std::cout << "There is a syntactical error in the expression,\n"
+                             "please rerun the program after correcting the expression\n"
+                             "Press enter to continue... ";
+                std::cin.get();
+            }
+            else if (evaluate(p) == -1)
+            {
+                std::cout << "Sorry, the expression could not be evaluated\n"
+                             "Press enter to continue... ";
+                std::cin.get();
+            }
+        }
+        else if (choice == 2)
+        {
+            help();
+        }
+    } while (choice != 3);
 }
 
+int mainMenuChoice()
+{
+    int choice;
+    do
+    {
+        std::cout << "Main Menu\n"
+                     "----------\n"
+                     "1. Evaluate Expression\n"
+                     "2. Help\n"
+                     "3. Exit\n";
+        std::cout << "Enter your choice: ";
+        std::cin >> choice;
+        if (!std::cin)
+        {
+            std::cout << "\nInvalid input, press Enter to try again... ";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cin.get();
+        }
+        system("cls");
+    } while (!std::cin);
+    return choice;
+}
+void help()
+{
+    std::cout << "List of operators\n"
+                 "------------------\n"
+                 "+ addition\n"
+                 "- subtraction\n"
+                 "* multiplication\n"
+                 "/ division\n"
+                 "( open parenthesis\n"
+                 ") close parenthesis\n"
+                 "^ Exponent\n"
+                 "s sin\n"
+                 "c cos\n"
+                 "t tan\n"
+                 "a absolute\n"
+                 "# square root\n";
+
+    std::cout << "\nPress enter to continue... ";
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::cin.get();
+    system("cls");
+}
 int symbolType(char symbol)
 {
     if (

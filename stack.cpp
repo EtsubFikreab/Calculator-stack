@@ -27,7 +27,7 @@ template <class T>
 void Stack<T>::push(T item)
 {
     stackNode<T> *p = new (std::nothrow) stackNode<T>;
-    if (p != NULL)
+    if (p)
     {
         p->data = item;
         p->next = top;
